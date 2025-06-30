@@ -24,7 +24,7 @@ return new class extends Migration
             $table->integer('supplier_contact');
             $table->integer('amount');
             $table->integer('transaction_number');
-            $table->string('evidence_path');
+            $table->longText('evidence_path')->nullable();
             $table->timestamps();
         });
     }

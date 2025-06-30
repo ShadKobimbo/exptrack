@@ -11,8 +11,15 @@ class Expense extends Model
     /** @use HasFactory<\Database\Factories\ExpenseFactory> */
     use HasFactory;
     protected $fillable = [
-        'user_id', 'name', 'description', 'shop_id', 'account_debited',
-        'supplier_paid', 'supplier_contact', 'amount', 'transaction_number',
+        'user_id', 
+        'name', 
+        'description', 
+        'shop_id', 
+        'account_debited',
+        'supplier_paid', 
+        'supplier_contact', 
+        'amount', 
+        'transaction_number',
         'evidence_path'
     ];
     

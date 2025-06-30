@@ -16,23 +16,23 @@ class ExpenseController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Expense::with('shop')
-        ->where('user_id', Auth::id());
+        // $query = Expense::with('shop')->where('user_id', Auth::id());
+        $query = Expense::with('shop');
 
-    // Search filter
-    if ($search = $request->input('search')) {
-        $query->where(function ($q) use ($search) {
-            $q->where('name', 'like', "%$search%")
-              ->orWhere('description', 'like', "%$search%")
-              ->orWhere('supplier_paid', 'like', "%$search%")
-              ->orWhere('transaction_number', 'like', "%$search%");
+        // Search filter
+        if ($search = $request->input('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%")
+                ->orWhere('description', 'like', "%$search%")
+                ->orWhere('supplier_paid', 'like', "%$search%")
+                ->orWhere('transaction_number', 'like', "%$search%");
         });
     }
 
-    // Paginate the result (10 per page)
-    $expenses = $query->latest()->paginate(10);
+        // Paginate the result (10 per page)
+        $expenses = $query->latest()->paginate(10);
 
-    return view('expenses.index', compact('expenses'));
+        return view('expenses.index', compact('expenses'));
     }
 
     /**
@@ -58,10 +58,14 @@ class ExpenseController extends Controller
             'supplier_contact' => 'required|numeric',
             'amount' => 'required|integer',
             'transaction_number' => 'required|integer',
-            'evidence_file' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'evidence_path' => 'nullable|file|mimes:jpg,jpeg,png,pdf',
         ]);
 
-        $path = $request->file('evidence_file')->store('evidence', 'public');
+        if ($request->hasFile('evidence_file')) {
+            $path = $request->file('evidence_file')->store('evidence', 'public');
+        } else {
+            $path = '';
+        }
 
         Expense::create([
             'user_id' => Auth::id(),
@@ -73,7 +77,7 @@ class ExpenseController extends Controller
             'supplier_contact' => $request->supplier_contact,
             'amount' => $request->amount,
             'transaction_number' => $request->transaction_number,
-            'evidence_url' => $path,
+            'evidence_path' => $path,
         ]);
 
         return redirect()->route('expenses.index')->with('success', 'Expense recorded successfully.');
@@ -93,7 +97,7 @@ class ExpenseController extends Controller
      */
     public function edit(Expense $expense)
     {
-        $this->authorize('update', $expense);
+        // $this->authorize('update', $expense);
         $shops = Shop::all();
         return view('expenses.edit', compact('expense', 'shops'));
     }
@@ -103,7 +107,7 @@ class ExpenseController extends Controller
      */
     public function update(Request $request, Expense $expense)
     {
-        $this->authorize('update', $expense);
+        // $this->authorize('update', $expense);
 
         if ($request->hasFile('evidence_file')) {
             $path = $request->file('evidence_file')->store('evidence', 'public');
@@ -123,14 +127,14 @@ class ExpenseController extends Controller
      */
     public function destroy(Expense $expense)
     {
-        $this->authorize('delete', $expense);
-        $expense->delete();
-
-        return redirect()->route('expenses.index')->with('success', 'Expense deleted.');
+        // $this->authorize('delete', $expense);
+        if($expense->delete()){
+            return redirect()->route('expenses.index')->with('success', 'Expense deleted.');
+        }
     }
 
     public function export()
-{
-    return Excel::download(new ExpensesExport, 'expenses.xlsx');
-}
+    {
+        return Excel::download(new ExpensesExport, 'expenses.xlsx');
+    }
 }

@@ -12,7 +12,7 @@ class Shop extends Model
     /** @use HasFactory<\Database\Factories\ShopFactory> */
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'location'];
 
     /* Get all of the expenses for the Shop
     *

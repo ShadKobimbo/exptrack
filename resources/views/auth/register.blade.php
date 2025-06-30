@@ -1,60 +1,116 @@
-<x-guest-layout>
-    <x-authentication-card>
-        <x-slot name="logo">
-            <x-authentication-card-logo />
-        </x-slot>
+@extends('layouts.app')
 
-        <x-validation-errors class="mb-4" />
-
-        <form method="POST" action="{{ route('register') }}">
-            @csrf
-
-            <div>
-                <x-label for="name" value="{{ __('Name') }}" />
-                <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+@section('content')
+<div class="container-fluid d-flex align-items-center justify-content-center">
+    <div class="row shadow rounded-4 overflow-hidden w-100">
+        <!-- Left Column -->
+        <div class="col-md-6 d-none d-md-flex flex-column justify-content-between bg-white p-4">
+            <!-- Brand/Logo -->
+            <a class="navbar-brand" href="{{ route('dashboard') }}">
+                <img src="{{ asset('storage/financial-business-round-composition.png') }}" alt="Logo">
+            </a>
+            <div class="text-center">
+                <h3 class="fw-bold">Fast, Efficient and Productive</h3>
+                <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed.</p>
             </div>
-
-            <div class="mt-4">
-                <x-label for="email" value="{{ __('Email') }}" />
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <img src="https://flagcdn.com/us.svg" alt="English" width="20">
+                    <span>English</span>
+                </div>
+                <div class="d-flex gap-3">
+                    <a href="#" class="text-decoration-none text-primary">Terms</a>
+                    <a href="#" class="text-decoration-none text-primary">Plans</a>
+                    <a href="#" class="text-decoration-none text-primary">Contact Us</a>
+                </div>
             </div>
+        </div>
 
-            <div class="mt-4">
-                <x-label for="password" value="{{ __('Password') }}" />
-                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
-            </div>
+        <!-- Right Column -->
+        <div class="col-md-6 bg-light p-5">
+            <h4 class="fw-bold">Sign Up</h4>
+            <p class="text-muted mb-4">Fill in your details below</p>
 
-            <div class="mt-4">
-                <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
-                <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
-            </div>
-
-            @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
-                <div class="mt-4">
-                    <x-label for="terms">
-                        <div class="flex items-center">
-                            <x-checkbox name="terms" id="terms" required />
-
-                            <div class="ms-2">
-                                {!! __('I agree to the :terms_of_service and :privacy_policy', [
-                                        'terms_of_service' => '<a target="_blank" href="'.route('terms.show').'" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">'.__('Terms of Service').'</a>',
-                                        'privacy_policy' => '<a target="_blank" href="'.route('policy.show').'" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">'.__('Privacy Policy').'</a>',
-                                ]) !!}
-                            </div>
-                        </div>
-                    </x-label>
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <strong>Whoops!</strong> There were some problems with your input.
+                    <ul class="mb-0 mt-2">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
             @endif
 
-            <div class="flex items-center justify-end mt-4">
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                    {{ __('Already registered?') }}
-                </a>
+            <form method="POST" action="{{ route('register') }}">
+                @csrf
 
-                <x-button class="ms-4">
-                    {{ __('Register') }}
-                </x-button>
-            </div>
-        </form>
-    </x-authentication-card>
-</x-guest-layout>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autofocus autocomplete="name">
+                    @error('name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3">
+                    <label for="email" class="form-label fw-semibold">Email</label>
+                    <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                    <label for="password" class="form-label fw-semibold">Password</label>
+                    <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
+                    <small class="text-muted">Use 8 or more characters with a mix of letters, numbers & symbols.</small>
+                     @error('password')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Repeat Password -->
+                <div class="mb-3">
+                    <label for="password_confirmation" class="form-label fw-semibold">Repeat Password</label>
+                    <input id="password_confirmation" type="password" class="form-control @error('password_confirmation') is-invalid @enderror" name="password_confirmation" required autocomplete="new-password">
+                    @error('password_confirmation')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <!-- Terms -->
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" value="1" id="terms" required>
+                    <label class="form-check-label" for="terms">
+                        I accept the <a href="#" class="text-decoration-none text-primary">Term</a>
+                    </label>
+                </div>
+
+                <!-- Submit -->
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-primary">Sign Up</button>
+                </div>
+
+                @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
+                    <div class="mb-3 form-check">
+                        <input class="form-check-input @error('terms') is-invalid @enderror" type="checkbox" name="terms" id="terms" required>
+                        <label class="form-check-label" for="terms">
+                            {!! __('I agree to the :terms_of_service and :privacy_policy', [
+                                'terms_of_service' => '<a target="_blank" href="'.route('terms.show').'">Terms of Service</a>',
+                                'privacy_policy' => '<a target="_blank" href="'.route('policy.show').'">Privacy Policy</a>',
+                            ]) !!}
+                        </label>
+                        @error('terms')
+                            <div class="invalid-feedback d-block">{{ $errors->first('terms') }}</div>
+                        @enderror
+                    </div>
+                @endif
+
+                <div class="text-center">
+                    Already have an account? <a href="{{ route('login') }}" class="text-decoration-none text-primary">Sign In</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endsection
