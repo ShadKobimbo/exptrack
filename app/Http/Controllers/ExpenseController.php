@@ -57,7 +57,7 @@ class ExpenseController extends Controller
             'supplier_paid' => 'required|string|max:255',
             'supplier_contact' => 'required|numeric',
             'amount' => 'required|integer',
-            'transaction_number' => 'required|integer',
+            'transaction_number' => 'required|string',
             'evidence_path' => 'nullable|file|mimes:jpg,jpeg,png,pdf',
         ]);
 

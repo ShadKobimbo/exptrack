@@ -42,7 +42,7 @@
 
 <div class="mb-3">
     <label for="transaction_number" class="form-label">Transaction Number</label>
-    <input type="number" name="transaction_number" class="form-control" value="{{ old('transaction_number', $expense->transaction_number ?? '') }}" required>
+    <input type="text" id="transaction_number" name="transaction_number" class="form-control" onchange="upperCase()" value="{{ old('transaction_number', $expense->transaction_number ?? '') }}" required>
 </div>
 
 <div class="mb-3">
@@ -55,4 +55,11 @@
         <a href="{{ asset('storage/' . $expense->evidence_path) }}" target="_blank">View Current File</a>
     </div>
 @endif
+
+<script>
+    function upperCase() {
+      const x = document.getElementById("transaction_number");
+      x.value = x.value.toUpperCase();
+    }
+</script>
 
