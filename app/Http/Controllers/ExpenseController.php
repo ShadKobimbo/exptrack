@@ -36,8 +36,18 @@ class ExpenseController extends Controller
             });
         }
 
+        // Filter by date range
+        if ($request->filled('start_date')) {
+            $query->whereDate('expense_date', '>=', $request->start_date);
+        }
+
+        if ($request->filled('end_date')) {
+            $query->whereDate('expense_date', '<=', $request->end_date);
+        }
+
+
         // Paginate the result (10 per page)
-        $expenses = $query->latest()->paginate(10);
+        $expenses = $query->orderByDesc('expense_date')->paginate(10)->appends($request->query());
 
         return view('expenses.index', compact('expenses'));
     }
@@ -60,13 +70,17 @@ class ExpenseController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'shop_id' => 'required|exists:shops,id',
-            'account_debited' => 'required|integer',
-            'supplier_paid' => 'required|string|max:255',
-            'supplier_contact' => 'required|integer',
+            'supplier_paid' => 'nullable|string|max:255',
+            'supplier_contact' => 'nullable|integer',
             'amount' => 'required|integer',
-            'transaction_number' => 'required|string',
+            'transaction_charge' => 'nullable|integer',
+            'transaction_number' => 'nullable|string',
             'expense_date' => 'nullable|date',
             'evidence_path' => 'nullable|file|mimes:jpg,jpeg,png,pdf',
+        ],[
+            'name.required' => 'The expense name is required.',
+            'amount.required' => 'You must enter an amount.',
+            'amount.numeric' => 'The amount must be a number.',
         ]);
 
         if ($request->hasFile('evidence_file')) {
@@ -86,6 +100,7 @@ class ExpenseController extends Controller
             'supplier_paid' => $request->supplier_paid,
             'supplier_contact' => $request->supplier_contact,
             'amount' => $request->amount,
+            'transaction_charge' => $request->transaction_charge,
             'transaction_number' => $request->transaction_number,
             'expense_date' => $request->expense_date,
             'evidence_path' => $path,
@@ -128,7 +143,7 @@ class ExpenseController extends Controller
 
         $expense->update($request->only([
             'name', 'description', 'shop_id', 'account_debited',
-            'supplier_paid', 'supplier_contact', 'amount', 'transaction_number', 'expense_date', 'status'
+            'supplier_paid', 'supplier_contact', 'amount', 'transaction_charge', 'transaction_number', 'expense_date', 'status'
         ]) + ['evidence_path' => $expense->evidence_path]);
 
         return redirect()->route('expenses.index')->with('success', 'Expense updated.');
@@ -149,4 +164,11 @@ class ExpenseController extends Controller
     {
         return Excel::download(new ExpensesExport, 'expenses.xlsx');
     }
+
+    public function ajaxShow(Expense $expense){
+        return response()->json([
+            'html' => view('expenses.partials.ajax_details', compact('expense'))->render(),
+        ]);
+    }
+
 }

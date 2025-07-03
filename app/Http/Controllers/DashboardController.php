@@ -13,15 +13,13 @@ class DashboardController extends Controller
     {
         $userId = Auth::id();
 
-        $totalAllTime = Expense::where('user_id', $userId)->sum('amount');
+        $totalAllTime = Expense::sum('amount');
 
-        $totalThisMonth = Expense::where('user_id', $userId)
-            ->whereMonth('created_at', now()->month)
+        $totalThisMonth = Expense::whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->sum('amount');
 
-        $totalToday = Expense::where('user_id', $userId)
-            ->whereDate('created_at', Carbon::today())
+        $totalToday = Expense::whereDate('created_at', Carbon::today())
             ->sum('amount');
 
         return view('dashboard', compact('totalAllTime', 'totalThisMonth', 'totalToday'));

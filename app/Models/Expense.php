@@ -19,6 +19,7 @@ class Expense extends Model
         'supplier_paid', 
         'supplier_contact', 
         'amount', 
+        'transaction_charge',
         'transaction_number',
         'evidence_path',
         'status',

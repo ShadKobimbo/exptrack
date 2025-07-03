@@ -21,6 +21,9 @@ Route::middleware([
     // ✅ Excel export route inside the auth group
     Route::get('/expenses/export', [ExpenseController::class, 'export'])->name('expenses.export');
 
+    //Pull and display all information relating to an expenses in a modal directly from the db
+    Route::get('/expenses/{expense}/ajax', [ExpenseController::class, 'ajaxShow'])->name('expenses.ajaxShow');
+
     // ✅ Resource routes
     Route::resource('expenses', ExpenseController::class);
     Route::resource('shops', ShopController::class);

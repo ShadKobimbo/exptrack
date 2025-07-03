@@ -22,17 +22,17 @@
 
 <div class="mb-3">
     <label for="account_debited" class="form-label">Account Debited</label>
-    <input type="number" name="account_debited" class="form-control" value="{{ old('account_debited', $expense->account_debited ?? '') }}" required>
+    <input type="number" name="account_debited" class="form-control" value="{{ old('account_debited', $expense->account_debited ?? '') }}">
 </div>
 
 <div class="mb-3">
     <label for="supplier_paid" class="form-label">Supplier Paid</label>
-    <input type="text" name="supplier_paid" class="form-control" value="{{ old('supplier_paid', $expense->supplier_paid ?? '') }}" required>
+    <input type="text" name="supplier_paid" class="form-control" value="{{ old('supplier_paid', $expense->supplier_paid ?? '') }}">
 </div>
 
 <div class="mb-3">
     <label for="supplier_contact" class="form-label">Supplier Contact</label>
-    <input type="number" name="supplier_contact" class="form-control" value="{{ old('supplier_contact', $expense->supplier_contact ?? '') }}" required>
+    <input type="number" name="supplier_contact" class="form-control" value="{{ old('supplier_contact', $expense->supplier_contact ?? '') }}"   placeholder="254700400500">
 </div>
 
 <div class="mb-3">
@@ -41,14 +41,19 @@
 </div>
 
 <div class="mb-3">
+    <label for="transaction_charge" class="form-label">Transaction Charge</label>
+    <input type="number" id="transaction_charge" name="transaction_charge" class="form-control" value="{{ old('transaction_charge', $expense->transaction_charge ?? '') }}">
+</div>
+
+<div class="mb-3">
     <label for="transaction_number" class="form-label">Transaction Number</label>
-    <input type="text" id="transaction_number" name="transaction_number" class="form-control" onchange="upperCase()" value="{{ old('transaction_number', $expense->transaction_number ?? '') }}" required>
+    <input type="text" id="transaction_number" name="transaction_number" class="form-control" onchange="upperCase()" value="{{ old('transaction_number', $expense->transaction_number ?? '') }}">
 </div>
 
 <div class="mb-3">
     <label for="date" class="form-label">Date of Expenditure</label>
     <input type="date" name="expense_date" id="expense_date" class="form-control"
-           value="{{ old('date', optional($expense)->date ? \Carbon\Carbon::parse($expense->date)->format('Y-m-d') : '') }}">
+        value="{{ old('expense_date', optional($expense)->expense_date ? \Carbon\Carbon::parse($expense->expense_date)->format('Y-m-d') : '') }}">
 </div>
 
 <div class="mb-3">

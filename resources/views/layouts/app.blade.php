@@ -20,6 +20,37 @@
 
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        .expense-details-card {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+    
+        .expense-details-card dl {
+            margin-bottom: 0;
+        }
+    
+        .expense-details-card dt {
+            font-weight: 500;
+            color: #6c757d;
+        }
+    
+        .expense-details-card dd {
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: #212529;
+        }
+    
+        .expense-details-card dd:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+    
 </head>
 
 <body class="font-sans antialiased app-layout">
@@ -58,7 +89,7 @@
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link {{ request()->routeIs('shops.index') ? 'active' : '' }}"
-                                            href="{{ route('shops.index') }}">Shops</a>
+                                            href="{{ route('shops.index') }}">Locations</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"
@@ -125,6 +156,7 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+    <!-- JQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-..." crossorigin="anonymous"></script>
 </body>
 </html>

@@ -19,11 +19,12 @@ return new class extends Migration
             $table->string('name');
             $table->longText('description');
             $table->foreignIdFor(Shop::class);
-            $table->integer('account_debited');
-            $table->string('supplier_paid');
-            $table->integer('supplier_contact');
+            $table->string('account_debited')->nullable();
+            $table->string('supplier_paid')->nullable();
+            $table->string('supplier_contact')->nullable();
             $table->integer('amount');
-            $table->string('transaction_number');
+            $table->integer('transaction_charge')->nullable();;
+            $table->string('transaction_number')->nullable();
             $table->longText('evidence_path')->nullable();
             $table->string('status')->default('submitted'); // or use 'pending', 'draft', etc.
             $table->date('expense_date')->nullable(); // Allow null for existing records
