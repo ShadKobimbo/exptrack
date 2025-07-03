@@ -46,8 +46,14 @@
 </div>
 
 <div class="mb-3">
+    <label for="date" class="form-label">Date of Expenditure</label>
+    <input type="date" name="expense_date" id="expense_date" class="form-control"
+           value="{{ old('date', optional($expense)->date ? \Carbon\Carbon::parse($expense->date)->format('Y-m-d') : '') }}">
+</div>
+
+<div class="mb-3">
     <label for="evidence_file" class="form-label">Upload Evidence</label>
-    <input type="file" name="evidence_file" class="form-control" {{ isset($expense) ? '' : 'required' }}>
+    <input type="file" name="evidence_file" class="form-control" {{ isset($expense) ? '' : '' }}>
 </div>
 
 @if (isset($expense) && $expense->evidence_path)

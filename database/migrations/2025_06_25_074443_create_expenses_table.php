@@ -23,8 +23,10 @@ return new class extends Migration
             $table->string('supplier_paid');
             $table->integer('supplier_contact');
             $table->integer('amount');
-            $table->integer('transaction_number');
+            $table->string('transaction_number');
             $table->longText('evidence_path')->nullable();
+            $table->string('status')->default('submitted'); // or use 'pending', 'draft', etc.
+            $table->date('expense_date')->nullable(); // Allow null for existing records
             $table->timestamps();
         });
     }

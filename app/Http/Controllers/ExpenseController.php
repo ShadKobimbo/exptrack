@@ -17,6 +17,13 @@ class ExpenseController extends Controller
     public function index(Request $request)
     {
         // $query = Expense::with('shop')->where('user_id', Auth::id());
+
+        $status = $request->input('status');
+
+        // $query = Expense::with('shop')->when($status, function ($query, $status) {
+        //     return $query->where('status', $status);
+        // });
+
         $query = Expense::with('shop');
 
         // Search filter
@@ -26,8 +33,8 @@ class ExpenseController extends Controller
                 ->orWhere('description', 'like', "%$search%")
                 ->orWhere('supplier_paid', 'like', "%$search%")
                 ->orWhere('transaction_number', 'like', "%$search%");
-        });
-    }
+            });
+        }
 
         // Paginate the result (10 per page)
         $expenses = $query->latest()->paginate(10);
@@ -55,9 +62,10 @@ class ExpenseController extends Controller
             'shop_id' => 'required|exists:shops,id',
             'account_debited' => 'required|integer',
             'supplier_paid' => 'required|string|max:255',
-            'supplier_contact' => 'required|numeric',
+            'supplier_contact' => 'required|integer',
             'amount' => 'required|integer',
             'transaction_number' => 'required|string',
+            'expense_date' => 'nullable|date',
             'evidence_path' => 'nullable|file|mimes:jpg,jpeg,png,pdf',
         ]);
 
@@ -66,6 +74,8 @@ class ExpenseController extends Controller
         } else {
             $path = '';
         }
+
+        $status = $request->input('action') === 'draft' ? 'draft' : 'submitted';
 
         Expense::create([
             'user_id' => Auth::id(),
@@ -77,10 +87,12 @@ class ExpenseController extends Controller
             'supplier_contact' => $request->supplier_contact,
             'amount' => $request->amount,
             'transaction_number' => $request->transaction_number,
+            'expense_date' => $request->expense_date,
             'evidence_path' => $path,
+            'status' => $status,
         ]);
 
-        return redirect()->route('expenses.index')->with('success', 'Expense recorded successfully.');
+        return redirect()->route('expenses.index')->with('success', $status === 'draft' ? 'Draft saved successfully.' : 'Expense submitted successfully.');
 
     }
 
@@ -116,7 +128,7 @@ class ExpenseController extends Controller
 
         $expense->update($request->only([
             'name', 'description', 'shop_id', 'account_debited',
-            'supplier_paid', 'supplier_contact', 'amount', 'transaction_number',
+            'supplier_paid', 'supplier_contact', 'amount', 'transaction_number', 'expense_date', 'status'
         ]) + ['evidence_path' => $expense->evidence_path]);
 
         return redirect()->route('expenses.index')->with('success', 'Expense updated.');

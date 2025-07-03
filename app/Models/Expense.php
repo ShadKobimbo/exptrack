@@ -20,7 +20,9 @@ class Expense extends Model
         'supplier_contact', 
         'amount', 
         'transaction_number',
-        'evidence_path'
+        'evidence_path',
+        'status',
+        'expense_date',
     ];
     
     public function user(): BelongsTo{
