@@ -13,7 +13,7 @@
 </a>
 
 <!-- Delete Button -->
-<form action="{{ route('expenses.destroy', $expense) }}"
+{{-- <form action="{{ route('expenses.destroy', $expense) }}"
     method="POST" class="d-inline">
     @csrf
     @method('DELETE')
@@ -22,4 +22,10 @@
         <i class="bi bi-trash d-inline d-sm-none" data-bs-toggle="tooltip" title="Delete"></i>
         <span class="d-none d-sm-inline"><i class="bi bi-trash me-1"></i>Delete</span>
     </button>
-</form>
+</form> --}}
+
+<!-- Delete Button -->
+{{-- <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-expense-id="{{ $expense->id }}">
+    <i class="bi bi-trash d-inline d-sm-none" data-bs-toggle="tooltip" title="Delete"></i>
+    <span class="d-none d-sm-inline"><i class="bi bi-trash me-1"></i>Delete</span>
+</button> --}}

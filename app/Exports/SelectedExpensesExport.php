@@ -4,13 +4,29 @@ namespace App\Exports;
 
 use App\Models\Expense;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class ExpensesExport implements FromCollection, WithHeadings, ShouldAutoSize
+class SelectedExpensesExport implements FromCollection, WithHeadings, ShouldAutoSize
 {
+
+    use Exportable;
+
+    protected $ids;
+
+    public function __construct(array $ids)
+    {
+        $this->ids = $ids;
+    }
+
+    /**
+    * @return \Illuminate\Support\Collection
+    */
     public function collection()
     {
+        // return Expense::whereIn('id', $this->ids)->get();
+
         return Expense::select([
             'name',
             'description',
@@ -22,7 +38,7 @@ class ExpensesExport implements FromCollection, WithHeadings, ShouldAutoSize
             'shop_id',
             'account_debited',
             'created_at'
-        ])->with('shop', 'user')->get();
+        ])->whereIn('id', $this->ids)->with('shop', 'user')->get();
     }
 
     public function headings(): array
@@ -40,12 +56,4 @@ class ExpensesExport implements FromCollection, WithHeadings, ShouldAutoSize
             'Date Created'
         ];
     }
-
-    //public function collection(){
-        // return Expense::all();
-        //return Expense::with('shop', 'user')->get();
-    //}
-
 }
-
-

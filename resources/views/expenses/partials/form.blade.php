@@ -42,7 +42,7 @@
 
 <div class="mb-3">
     <label for="transaction_charge" class="form-label">Transaction Charge</label>
-    <input type="number" id="transaction_charge" name="transaction_charge" class="form-control" value="{{ old('transaction_charge', $expense->transaction_charge ?? '') }}">
+    <input type="number" step="0.01" id="transaction_charge" name="transaction_charge" class="form-control" value="{{ old('transaction_charge', $expense->transaction_charge ?? '') }}">
 </div>
 
 <div class="mb-3">
@@ -57,15 +57,34 @@
 </div>
 
 <div class="mb-3">
-    <label for="evidence_file" class="form-label">Upload Evidence</label>
+    <label for="evidence" class="form-label">Evidence File</label>
+
+    @if ($expense->evidence_path)
+        <div class="mb-2">
+            @php
+                $extension = pathinfo($expense->evidence_path, PATHINFO_EXTENSION);
+                $imageExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+            @endphp
+
+            @if (in_array(strtolower($extension), $imageExtensions))
+                <div class="mb-2">
+                    <img src="{{ asset('storage/' . $expense->evidence_path) }}" alt="Evidence image" class="img-thumbnail" style="max-width: 200px;">
+                </div>
+            @else
+                <a href="{{ asset('storage/' . $expense->evidence_path) }}" target="_blank">View current file</a>
+            @endif
+
+            <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" name="remove_evidence" id="remove_evidence" value="1">
+                <label class="form-check-label" for="remove_evidence">
+                    Remove evidence
+                </label>
+            </div>
+        </div>
+    @endif
+
     <input type="file" name="evidence_file" class="form-control" {{ isset($expense) ? '' : '' }}>
 </div>
-
-@if (isset($expense) && $expense->evidence_path)
-    <div class="mb-3">
-        <a href="{{ asset('storage/' . $expense->evidence_path) }}" target="_blank">View Current File</a>
-    </div>
-@endif
 
 <script>
     function upperCase() {

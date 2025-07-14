@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('supplier_paid')->nullable();
             $table->string('supplier_contact')->nullable();
             $table->integer('amount');
-            $table->integer('transaction_charge')->nullable();;
+            $table->double('transaction_charge')->nullable();;
             $table->string('transaction_number')->nullable();
             $table->longText('evidence_path')->nullable();
             $table->string('status')->default('submitted'); // or use 'pending', 'draft', etc.

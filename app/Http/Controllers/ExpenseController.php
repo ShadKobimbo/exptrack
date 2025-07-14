@@ -6,8 +6,12 @@ use App\Models\Expense;
 use App\Models\Shop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Exports\ExpensesExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ExpensesExport;
+use App\Exports\SelectedExpensesExport;
+use Illuminate\Support\Facades\Storage;
+
+
 
 class ExpenseController extends Controller
 {
@@ -45,9 +49,13 @@ class ExpenseController extends Controller
             $query->whereDate('expense_date', '<=', $request->end_date);
         }
 
+        // Dynamic pagination size from query
+        $perPage = $request->input('per_page', 10); // default is 10
 
-        // Paginate the result (10 per page)
-        $expenses = $query->orderByDesc('expense_date')->paginate(10)->appends($request->query());
+        // Paginate and preserve all query parameters
+        $expenses = $query->orderByDesc('created_at')
+            ->paginate($perPage)
+            ->appends($request->query());
 
         return view('expenses.index', compact('expenses'));
     }
@@ -73,7 +81,7 @@ class ExpenseController extends Controller
             'supplier_paid' => 'nullable|string|max:255',
             'supplier_contact' => 'nullable|integer',
             'amount' => 'required|integer',
-            'transaction_charge' => 'nullable|integer',
+            'transaction_charge' => 'nullable|double',
             'transaction_number' => 'nullable|string',
             'expense_date' => 'nullable|date',
             'evidence_path' => 'nullable|file|mimes:jpg,jpeg,png,pdf',
@@ -132,21 +140,39 @@ class ExpenseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Expense $expense)
-    {
-        // $this->authorize('update', $expense);
+    public function update(Request $request, Expense $expense){
+        $data = $request->validate([
+            // other validations...
+            'evidence' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'remove_evidence' => 'nullable|boolean',
+        ]);
 
+        // Remove old evidence if requested
+        if ($request->has('remove_evidence') && $expense->evidence_path) {
+            Storage::delete('public/' . $expense->evidence_path);
+            $expense->evidence_path = null;
+        }
+
+        // Handle new upload
         if ($request->hasFile('evidence_file')) {
+            if ($expense->evidence_path) {
+                Storage::delete('public/' . $expense->evidence_path);
+            }
+
             $path = $request->file('evidence_file')->store('evidence', 'public');
             $expense->evidence_path = $path;
         }
+
+        // Save other fields
+        // $expense->fill($data);
+        // $expense->save();
 
         $expense->update($request->only([
             'name', 'description', 'shop_id', 'account_debited',
             'supplier_paid', 'supplier_contact', 'amount', 'transaction_charge', 'transaction_number', 'expense_date', 'status'
         ]) + ['evidence_path' => $expense->evidence_path]);
 
-        return redirect()->route('expenses.index')->with('success', 'Expense updated.');
+        return redirect()->route('expenses.index')->with('success', 'Expense updated successfully.');
     }
 
     /**
@@ -160,15 +186,42 @@ class ExpenseController extends Controller
         }
     }
 
+    public function bulkDelete(Request $request){
+        $ids = $request->input('selected_expenses', []);
+
+        if (!empty($ids)) {
+            Expense::whereIn('id', $ids)->delete();
+
+            return redirect()->route('expenses.index')->with('success', 'Selected expenses deleted successfully.');
+        }
+
+        return redirect()->route('expenses.index')->with('error', 'No expenses selected for deletion.');
+    }
+
     public function export()
     {
         return Excel::download(new ExpensesExport, 'expenses.xlsx');
+    }
+
+    public function exportSelected(Request $request)
+    {
+        $ids = $request->input('selected_expenses');
+
+        if (!$ids || count($ids) === 0) {
+            return redirect()->back()->with('error', 'Please select at least one expense.');
+        }
+
+        return Excel::download(new SelectedExpensesExport($ids), 'selected_expenses.xlsx');
     }
 
     public function ajaxShow(Expense $expense){
         return response()->json([
             'html' => view('expenses.partials.ajax_details', compact('expense'))->render(),
         ]);
+    }
+
+    public function testing(Request $request){
+        $ids = $request->input('');
     }
 
 }

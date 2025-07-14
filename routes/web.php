@@ -20,6 +20,12 @@ Route::middleware([
 
     // ✅ Excel export route inside the auth group
     Route::get('/expenses/export', [ExpenseController::class, 'export'])->name('expenses.export');
+    
+    // ✅ Excel export for selected record
+    Route::post('/expenses/export-selected', [ExpenseController::class, 'exportSelected'])->name('expenses.export.selected');
+
+    // ✅ Delete multiple selected records
+    Route::delete('/expenses/bulk-delete', [ExpenseController::class, 'bulkDelete'])->name('expenses.bulkDelete');
 
     //Pull and display all information relating to an expenses in a modal directly from the db
     Route::get('/expenses/{expense}/ajax', [ExpenseController::class, 'ajaxShow'])->name('expenses.ajaxShow');
@@ -28,4 +34,5 @@ Route::middleware([
     Route::resource('expenses', ExpenseController::class);
     Route::resource('shops', ShopController::class);
     Route::resource('users', UserController::class);
+
 });
