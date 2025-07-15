@@ -81,7 +81,7 @@ class ExpenseController extends Controller
             'supplier_paid' => 'nullable|string|max:255',
             'supplier_contact' => 'nullable|integer',
             'amount' => 'required|integer',
-            'transaction_charge' => 'nullable|double',
+            'transaction_charge' => 'nullable',
             'transaction_number' => 'nullable|string',
             'expense_date' => 'nullable|date',
             'evidence_path' => 'nullable|file|mimes:jpg,jpeg,png,pdf',

@@ -46,6 +46,7 @@
                             </div>
                         </th>
                         <th>Name</th>
+                        <th class="d-none d-xl-table-cell">Description</th>
                         <th>Amount</th>
                         <th class="d-none d-xl-table-cell">Transaction Charge</th>
                         <th class="d-none d-md-table-cell">Location</th>
@@ -66,6 +67,7 @@
                                 </div>
                             </td>
                             <td>{{ $expense->name }}</td>
+                            <td class="d-none d-xl-table-cell">{{ $expense->description }}</td>
                             <td>{{ number_format($expense->amount) }}</td>
                             <td class="d-none d-xl-table-cell">{{ $expense->transaction_charge }}</td>
                             <td class="d-none d-md-table-cell">{{ $expense->shop->name ?? 'N/A' }}</td>
@@ -88,7 +90,6 @@
                                 @include('expenses.partials.action_buttons', ['expense' => $expense])
                             </td>
                         </tr>
-                        @include('expenses.partials.modals', ['expense' => $expense])
                     @endforeach
                 </tbody>
             </table>
@@ -116,18 +117,23 @@
     @endif
 </div>
 
+@include('expenses.partials.modals', ['expense' => $expense])
+
 <script>
     function loadExpenseDetails(id) {
-        var modal = new bootstrap.Modal(document.getElementById('expenseModal'));
-        $('#expenseModalBody').html('<div class="text-center text-muted">Loading...</div>');
-    
+
+        $('#modal-loading').removeClass('d-none');
+        $('#expenseModalBody').addClass('d-none').html(''); // Clear previous content
+
+        $('#expenseModal').modal('show');
+
         $.ajax({
             url: '/expenses/' + id + '/ajax',
             type: 'GET',
             dataType: 'json',
             success: function(data) {
-                $('#expenseModalBody').html(data.html);
-                modal.show();
+                $('#expenseModalBody').html(data.html).removeClass('d-none');
+                $('#modal-loading').addClass('d-none');
             },
             error: function() {
                 $('#expenseModalBody').html('<div class="text-danger">Error loading details.</div>');

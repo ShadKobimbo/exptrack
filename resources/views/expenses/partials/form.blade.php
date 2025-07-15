@@ -59,7 +59,7 @@
 <div class="mb-3">
     <label for="evidence" class="form-label">Evidence File</label>
 
-    @if ($expense->evidence_path)
+    @if ($expense->evidence_path ?? '')
         <div class="mb-2">
             @php
                 $extension = pathinfo($expense->evidence_path, PATHINFO_EXTENSION);

@@ -37,7 +37,7 @@ class SelectedExpensesExport implements FromCollection, WithHeadings, ShouldAuto
             'supplier_contact',
             'shop_id',
             'account_debited',
-            'created_at'
+            'expense_date'
         ])->whereIn('id', $this->ids)->with('shop', 'user')->get();
     }
 
@@ -53,7 +53,7 @@ class SelectedExpensesExport implements FromCollection, WithHeadings, ShouldAuto
             'Supplier Contact',
             'Shop ID',
             'Account Debited',
-            'Date Created'
+            'Expense Date'
         ];
     }
 }

@@ -22,8 +22,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-            <a href="{{ route('expenses.index') }}" class="btn btn-secondary">Reset</a>
-            <button type="submit" class="btn btn-primary">Apply Filters</button>
+                <a href="{{ route('expenses.index') }}" class="btn btn-secondary">Reset</a>
+                <button type="submit" class="btn btn-primary">Apply Filters</button>
             </div>
         </form>
     </div>
@@ -37,9 +37,19 @@
                 <h5 class="modal-title text-primary">Expense Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body" id="expenseModalBody">
-                <div class="text-center text-muted">Loading...</div>
+
+            <!-- Spinner (Initially Visible) -->
+            <div id="modal-loading" class="text-center p-5">
+                <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+                </div>
             </div>
+
+            <!-- Content Placeholder (Initially Hidden) -->
+            <div class="modal-body" id="expenseModalBody" class="d-none p-4">
+                <!-- AJAX content will be injected here -->
+            </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
             </div>
@@ -53,20 +63,20 @@
     <div class="modal-dialog">
         <form id="delete-expense-{{ $expense->id }}" action="{{ route('expenses.destroy', $expense) }}" method="POST">
             @csrf
-        @method('DELETE')
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            @method('DELETE')
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this expense?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                </div>
             </div>
-            <div class="modal-body">
-                Are you sure you want to delete this expense?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-danger">Yes, Delete</button>
-            </div>
-        </div>
         </form>
     </div>
 </div>
