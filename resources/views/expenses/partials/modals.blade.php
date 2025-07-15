@@ -61,7 +61,7 @@
 <!-- Delete Confirmation Modal -->
 <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <form id="delete-expense-{{ $expense->id }}" action="{{ route('expenses.destroy', $expense) }}" method="POST">
+        <form id="delete-expense-form" action="" method="POST">
             @csrf
             @method('DELETE')
             <div class="modal-content">

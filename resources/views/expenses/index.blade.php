@@ -117,7 +117,7 @@
     @endif
 </div>
 
-@include('expenses.partials.modals', ['expense' => $expense])
+@include('expenses.partials.modals')
 
 <script>
     function loadExpenseDetails(id) {

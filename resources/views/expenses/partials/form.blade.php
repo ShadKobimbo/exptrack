@@ -22,7 +22,7 @@
 
 <div class="mb-3">
     <label for="account_debited" class="form-label">Account Debited</label>
-    <input type="number" name="account_debited" class="form-control" value="{{ old('account_debited', $expense->account_debited ?? '') }}">
+    <input type="text" name="account_debited" class="form-control" value="{{ old('account_debited', $expense->account_debited ?? '') }}">
 </div>
 
 <div class="mb-3">
@@ -32,7 +32,7 @@
 
 <div class="mb-3">
     <label for="supplier_contact" class="form-label">Supplier Contact</label>
-    <input type="number" name="supplier_contact" class="form-control" value="{{ old('supplier_contact', $expense->supplier_contact ?? '') }}"   placeholder="254700400500">
+    <input type="text" inputmode="numeric" pattern="[0-9]*" name="supplier_contact" class="form-control" value="{{ old('supplier_contact', $expense->supplier_contact ?? '') }}"   placeholder="254700400500">
 </div>
 
 <div class="mb-3">

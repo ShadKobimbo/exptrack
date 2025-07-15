@@ -11,8 +11,6 @@ use App\Exports\ExpensesExport;
 use App\Exports\SelectedExpensesExport;
 use Illuminate\Support\Facades\Storage;
 
-
-
 class ExpenseController extends Controller
 {
     /**
@@ -79,9 +77,7 @@ class ExpenseController extends Controller
             'description' => 'required|string',
             'shop_id' => 'required|exists:shops,id',
             'supplier_paid' => 'nullable|string|max:255',
-            'supplier_contact' => 'nullable|integer',
             'amount' => 'required|integer',
-            'transaction_charge' => 'nullable',
             'transaction_number' => 'nullable|string',
             'expense_date' => 'nullable|date',
             'evidence_path' => 'nullable|file|mimes:jpg,jpeg,png,pdf',
@@ -185,7 +181,7 @@ class ExpenseController extends Controller
             return redirect()->route('expenses.index')->with('success', 'Expense deleted.');
         }
     }
-
+    
     public function bulkDelete(Request $request){
         $ids = $request->input('selected_expenses', []);
 
