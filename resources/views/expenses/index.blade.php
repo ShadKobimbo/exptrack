@@ -14,6 +14,32 @@
         <button type="button" class="btn btn-danger"  onclick="document.getElementById('deleteSelected').click()" >
             <i class="bi bi-trash"></i>Delete        
         </button>
+        <!-- Show sum of expense By User -->
+        <button type="button" class="btn btn-outline-success">
+            <h6>Total Expenses: {{ number_format($totalExpenses, 2) }} </h6>
+    
+            @if(auth()->user()->isAdmin('admin'))
+                <form method="GET" action="{{ route('expenses.index') }}">
+                    {{-- Keep other filters in query --}}
+                    @foreach(request()->except('user_id') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+                </form>
+            @endif        
+        </button>
+        <!-- Trigger Search By User -->
+        @if(auth()->user()->isAdmin('admin'))
+            <form method="GET" action="{{ route('expenses.index') }}">
+                <select name="user_id" class="form-select" onchange="this.form.submit()">
+                    <option value="">-- Filter by User --</option>
+                    @foreach($users as $user)
+                        <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
+                            {{ $user->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </form>
+        @endif
         <!-- Trigger Search Modal -->
         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#searchModal">
             <i class="bi bi-search"></i>

@@ -65,7 +65,7 @@
                 <div class="container">
                     
                     <!-- Brand/Logo -->
-                    <a class="navbar-brand fw-bold text-primary" href="#">
+                    <a class="navbar-brand fw-bold text-primary" href="{{ route('dashboard') }}">
                         <img src="{{ asset('storage/cycloville-logo.png') }}" alt="Logo" style="height: 30px;">
                     </a>
                     
@@ -87,14 +87,16 @@
                                         <a class="nav-link {{ request()->routeIs('expenses.index') ? 'active' : '' }}"
                                             href="{{ route('expenses.index') }}">Expenses</a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link {{ request()->routeIs('shops.index') ? 'active' : '' }}"
-                                            href="{{ route('shops.index') }}">Locations</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"
-                                            href="{{ route('users.index') }}">Users</a>
-                                    </li>
+                                    @if (auth()->user()->isAdmin())
+                                        <li class="nav-item">
+                                            <a class="nav-link {{ request()->routeIs('shops.index') ? 'active' : '' }}"
+                                                href="{{ route('shops.index') }}">Locations</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"
+                                                href="{{ route('users.index') }}">Users</a>
+                                        </li>
+                                    @endif
                                 @else
                                     <li class="nav-item"><a class="nav-link" href="{{ route(name: 'login') }}">Log in</a></li>
                                     <li class="nav-item"><a a class="nav-link text-primary fw-semibold" href="{{ route(name: 'register') }}">Register</a></li>

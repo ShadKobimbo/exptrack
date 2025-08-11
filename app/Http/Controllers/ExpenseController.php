@@ -18,16 +18,18 @@ class ExpenseController extends Controller
      */
     public function index(Request $request)
     {
-        // $query = Expense::with('shop')->where('user_id', Auth::id());
-
-        $status = $request->input('status');
-
-        // $query = Expense::with('shop')->when($status, function ($query, $status) {
-        //     return $query->where('status', $status);
-        // });
 
         $query = Expense::with('shop');
-
+        
+        if (!auth()->user()->isAdmin()) {
+            $query->where('user_id', auth()->id());
+        } else {
+            // Admin can filter by specific user
+            if ($request->filled('user_id')) {
+                $query->where('user_id', $request->user_id);
+            }
+        }
+        
         // Search filter
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
@@ -47,6 +49,9 @@ class ExpenseController extends Controller
             $query->whereDate('expense_date', '<=', $request->end_date);
         }
 
+        // Get total amount
+        $totalExpenses = $query->sum('amount');
+
         // Dynamic pagination size from query
         $perPage = $request->input('per_page', 10); // default is 10
 
@@ -55,7 +60,10 @@ class ExpenseController extends Controller
             ->paginate($perPage)
             ->appends($request->query());
 
-        return view('expenses.index', compact('expenses'));
+        // Send list of users for the filter dropdown (admin only)
+        $users = auth()->user()->isAdmin('admin') ? \App\Models\User::orderBy('name')->get() : collect();
+
+        return view('expenses.index', compact('expenses', 'totalExpenses', 'users'));
     }
 
     /**
@@ -77,7 +85,7 @@ class ExpenseController extends Controller
             'description' => 'required|string',
             'shop_id' => 'required|exists:shops,id',
             'supplier_paid' => 'nullable|string|max:255',
-            'amount' => 'required|integer',
+            'amount' => 'required',
             'transaction_number' => 'nullable|string',
             'expense_date' => 'nullable|date',
             'evidence_path' => 'nullable|file|mimes:jpg,jpeg,png,pdf',

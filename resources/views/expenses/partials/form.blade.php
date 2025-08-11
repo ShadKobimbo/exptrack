@@ -37,12 +37,12 @@
 
 <div class="mb-3">
     <label for="amount" class="form-label">Amount</label>
-    <input type="number" name="amount" class="form-control" value="{{ old('amount', $expense->amount ?? '') }}" required>
+    <input type="number" step="0.00001" name="amount" class="form-control" value="{{ old('amount', $expense->amount ?? '') }}" required>
 </div>
 
 <div class="mb-3">
     <label for="transaction_charge" class="form-label">Transaction Charge</label>
-    <input type="number" step="0.01" id="transaction_charge" name="transaction_charge" class="form-control" value="{{ old('transaction_charge', $expense->transaction_charge ?? '') }}">
+    <input type="number" step="0.00001" id="transaction_charge" name="transaction_charge" class="form-control" value="{{ old('transaction_charge', $expense->transaction_charge ?? '') }}">
 </div>
 
 <div class="mb-3">
