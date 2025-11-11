@@ -96,7 +96,17 @@
                                             <a class="nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"
                                                 href="{{ route('users.index') }}">Users</a>
                                         </li>
+                                        <li class="nav-item">
+                                            <a href="{{ route('emails.email-test') }}" class="nav-link">
+                                                <i class="bi bi-envelope"></i> Email Test
+                                            </a>
+                                        </li>
                                     @endif
+                                    <li class="nav-item">
+                                        <a href="{{ route('emails.email-test') }}" class="nav-link">
+                                            <i class="bi bi-envelope"></i> Email Test
+                                        </a>
+                                    </li>
                                 @else
                                     <li class="nav-item"><a class="nav-link" href="{{ route(name: 'login') }}">Log in</a></li>
                                     <li class="nav-item"><a a class="nav-link text-primary fw-semibold" href="{{ route(name: 'register') }}">Register</a></li>
