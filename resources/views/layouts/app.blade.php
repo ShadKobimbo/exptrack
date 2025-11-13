@@ -96,17 +96,7 @@
                                             <a class="nav-link {{ request()->routeIs('users.index') ? 'active' : '' }}"
                                                 href="{{ route('users.index') }}">Users</a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a href="{{ route('emails.email-test') }}" class="nav-link">
-                                                <i class="bi bi-envelope"></i> Email Test
-                                            </a>
-                                        </li>
                                     @endif
-                                    <li class="nav-item">
-                                        <a href="{{ route('emails.email-test') }}" class="nav-link">
-                                            <i class="bi bi-envelope"></i> Email Test
-                                        </a>
-                                    </li>
                                 @else
                                     <li class="nav-item"><a class="nav-link" href="{{ route(name: 'login') }}">Log in</a></li>
                                     <li class="nav-item"><a a class="nav-link text-primary fw-semibold" href="{{ route(name: 'register') }}">Register</a></li>
@@ -130,6 +120,9 @@
                                     <ul class="dropdown-menu dropdown-menu-end">
                                         <li><h6 class="dropdown-header">{{ __('Manage Account') }}</h6></li>
                                         <li><a class="dropdown-item" href="{{ route('profile.show') }}">{{ __('Profile') }}</a></li>
+                                            @if (auth()->user()->isAdmin())
+                                                <li><a class="dropdown-item" href="{{ route('emails.email-settings') }}"> Email Settings</a></li>
+                                            @endif
                                         @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
                                             <li><a class="dropdown-item" href="{{ route('api-tokens.index') }}">{{ __('API Tokens') }}</a></li>
                                         @endif

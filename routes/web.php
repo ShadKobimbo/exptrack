@@ -8,6 +8,8 @@ use App\Http\Controllers\DashboardController;
 use App\Mail\TestEmail;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Admin\EmailTestController;
+use App\Http\Controllers\Admin\EmailSettingsController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -40,6 +42,9 @@ Route::middleware([
 
     Route::get('/emails/email-test', [EmailTestController::class, 'index'])->name('emails.email-test');
     Route::post('/emails/email-test/send', [EmailTestController::class, 'send'])->name('emails.email-test.send');
+
+    Route::get('/emails/email-settings', [EmailSettingsController::class, 'index'])->name('emails.email-settings');
+    Route::post('/emails/email-settings', [EmailSettingsController::class, 'update'])->name('emails.email-settings.update');
 
     // ✅ Resource routes
     Route::resource('expenses', ExpenseController::class);
