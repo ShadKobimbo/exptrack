@@ -53,7 +53,7 @@ class ExpenseController extends Controller
         $totalExpenses = $query->sum('amount');
 
         // Dynamic pagination size from query
-        $perPage = $request->input('per_page', 10); // default is 10
+        $perPage = $request->input('per_page', 50); // default is 50
 
         // Paginate and preserve all query parameters
         $expenses = $query->orderByDesc('created_at')

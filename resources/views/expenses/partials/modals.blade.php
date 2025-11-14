@@ -4,10 +4,16 @@
     <div class="modal-dialog">
         <form method="GET" action="{{ route('expenses.index') }}" class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title" id="searchModalLabel">Search Expenses</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title" id="searchModalLabel">Search Expenses</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+
+                {{-- Preserve other filters --}}
+                @foreach(request()->except('start_date', 'end_date', 'page') as $key => $value)
+                    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                @endforeach
+                
                 <div class="mb-3">
                     <label for="search" class="form-label">Search</label>
                     <input type="text" name="search" id="search" class="form-control" placeholder="Name or Supplier..." value="{{ request('search') }}">

@@ -4,46 +4,76 @@
 <div class="container">
     <h2 class="mb-4">Your Expenses</h2>
 
-    <div class="mb-3 d-flex gap-2">
-        <a href="{{ route('expenses.create') }}" class="btn btn-primary"><i class="bi bi-plus-square"></i> New</a>
-        <!-- Trigger Export form button -->
-        <button type="button" class="btn btn-success"  onclick="document.getElementById('exportSelected').click()" >
-            <i class="bi bi-file-spreadsheet"></i>Export        
-        </button>
-        <!-- Trigger Delete form button -->
-        <button type="button" class="btn btn-danger"  onclick="document.getElementById('deleteSelected').click()" >
-            <i class="bi bi-trash"></i>Delete        
-        </button>
-        <!-- Show sum of expense By User -->
-        <button type="button" class="btn btn-outline-success">
-            <h6>Total Expenses: {{ number_format($totalExpenses, 2) }} </h6>
-    
-            @if(auth()->user()->isAdmin('admin'))
-                <form method="GET" action="{{ route('expenses.index') }}">
-                    {{-- Keep other filters in query --}}
-                    @foreach(request()->except('user_id') as $key => $value)
-                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
-                    @endforeach
-                </form>
-            @endif        
-        </button>
-        <!-- Trigger Search By User -->
-        @if(auth()->user()->isAdmin('admin'))
-            <form method="GET" action="{{ route('expenses.index') }}">
-                <select name="user_id" class="form-select" onchange="this.form.submit()">
-                    <option value="">-- Filter by User --</option>
-                    @foreach($users as $user)
-                        <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
-                            {{ $user->name }}
+    <div class="mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+
+        <!-- LEFT SIDE: Per Page Selector -->
+        <form method="GET" action="{{ route('expenses.index') }}" class="d-flex">
+
+            {{-- Preserve all existing filters --}}
+            @foreach(request()->except('per_page', 'page') as $key => $value)
+                <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+            @endforeach
+
+            <div class="col-auto">
+                <select name="per_page" class="form-select" onchange="this.form.submit()">
+                    @foreach ([50, 100, 200] as $size)
+                        <option value="{{ $size }}" {{ request('per_page') == $size ? 'selected' : '' }}>
+                            Show {{ $size }}
                         </option>
                     @endforeach
                 </select>
-            </form>
-        @endif
-        <!-- Trigger Search Modal -->
-        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#searchModal">
-            <i class="bi bi-search"></i>
-        </button>
+            </div>
+        </form>
+
+        <!-- RIGHT SIDE: Buttons + Filters -->
+        <div class="d-flex align-items-center gap-2 flex-wrap">
+
+            <!-- Add Expense -->
+            <a href="{{ route('expenses.create') }}" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-square"></i> New
+            </a>
+
+            <!-- Export -->
+            <button type="button" class="btn btn-success btn-sm"
+                    onclick="document.getElementById('exportSelected').click()">
+                <i class="bi bi-file-spreadsheet"></i> Export
+            </button>
+
+            <!-- Delete -->
+            <button type="button" class="btn btn-danger btn-sm"
+                    onclick="document.getElementById('deleteSelected').click()">
+                <i class="bi bi-trash"></i> Delete
+            </button>
+
+            <!-- Total Expenses -->
+            <div class="btn btn-outline-success btn-sm d-flex align-items-center">
+                <strong>Total:</strong>&nbsp; {{ number_format($totalExpenses, 2) }}
+            </div>
+
+            <!-- User Filter (Admin Only) -->
+            @if(auth()->user()->isAdmin('admin'))
+                <form method="GET" action="{{ route('expenses.index') }}" class="d-flex">
+                    @foreach(request()->except('user_id','page') as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+
+                    <select name="user_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                        <option value="">-- User --</option>
+                        @foreach($users as $user)
+                            <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
+                                {{ $user->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </form>
+            @endif
+
+            <!-- Search Modal Button -->
+            <button type="button" class="btn btn-outline-primary btn-sm"
+                    data-bs-toggle="modal" data-bs-target="#searchModal">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
     </div>
 
     @if (session('success'))
@@ -125,9 +155,15 @@
 
         <!-- Per Page Selector -->
         <form method="GET" action="{{ route('expenses.index') }}" class="row g-2 mb-3">
+
+            {{-- Preserve all existing filters --}}
+            @foreach(request()->except('per_page', 'page') as $key => $value)
+                <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+            @endforeach
+
             <div class="col-auto">
                 <select name="per_page" class="form-select" onchange="this.form.submit()">
-                    @foreach ([10, 20, 50, 100] as $size)
+                    @foreach ([50, 100, 200] as $size)
                         <option value="{{ $size }}" {{ request('per_page') == $size ? 'selected' : '' }}>
                             Show {{ $size }}
                         </option>
@@ -138,7 +174,8 @@
 
         <!-- Pagination links -->
         <div class="mt-4">
-            {{ $expenses->appends(request()->query())->links() }}
+            {{-- {{ $expenses->appends(request()->query())->links() }} --}}
+            {{ $expenses->withQueryString()->links() }}
         </div>
     @endif
 </div>
